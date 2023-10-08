@@ -1,7 +1,6 @@
 <?php
 require_once  __DIR__  .  '/../header.php';	// header.phpを読み込む
-?>
-<?php
+
 // カート内のすべてのデータを取り出す		
 $cartItems = $cart->getItems();
 if (empty($cartItems)) {
