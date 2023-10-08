@@ -1,0 +1,98 @@
+# データベースshopの作成
+set names utf8;
+drop database if exists shop;
+create database shop character set utf8 collate utf8_general_ci;
+
+# ユーザーshoppingに、パスワードsiteを設定し、データベースshopに対するすべての権限を付与
+grant all privileges on shop.* to shopping@localhost identified by 'site';
+
+# データベースshopを使用する
+use shop;
+
+# テーブルitemsの作成
+create table items(
+	ident	int auto_increment primary key,
+	name	varchar(50) not null,
+	maker	varchar(50) not null,
+	price	int,
+	image	varchar(20),
+  genre varchar(10)
+);
+
+# テーブルitemsへデータを入力
+insert into items(name, maker, price, image, genre)
+	values('NEC LAVIE', 'NEC', 61980, 'pc001.jpg', 'pc');
+insert into items(name, maker, price, image, genre)
+	values('dynabook AZ45', '東芝', 80784, 'pc002.jpg', 'pc');
+insert into items(name, maker, price, image, genre)
+	values('Surface Pro', 'マイクロソフト', 167980, 'pc003.jpg', 'pc');
+insert into items(name, maker, price, image, genre)
+	values('FMV LIFEBOOK', '富士通', 221480, 'pc004.jpg', 'pc');
+insert into items(name, maker, price, image, genre)
+	values('MacBook Pro', 'Apple', 142800, 'pc005.jpg', 'pc');
+
+insert into items(name, maker, price, image, genre)
+	values('確かな力が身につくPHP「超」入門', '松浦健一郎/司ゆき', 2678, 'book001.jpg', 'book');
+insert into items(name, maker, price, image, genre)
+	values('スラスラわかるJavaScript', '生形　可奈子', 2484, 'book002.jpg', 'book');
+insert into items(name, maker, price, image, genre)
+	values('SCRUM BOOT CAMP THE BOOK', '西村　直人ほか', 2592, 'book003.jpg', 'book');
+insert into items(name, maker, price, image, genre)
+	values('かんたんUML入門 (プログラミングの教科書)', '大西　洋平ほか', 3218, 'book004.jpg', 'book');
+insert into items(name, maker, price, image, genre)
+	values('Webデザイナーのための jQuery入門', '高津戸 壮', 3110, 'book005.jpg', 'book');
+
+
+insert into items(name, maker, price, image, genre)
+	values('÷(ディバイド)', 'エド・シーラン', 1818, 'music001.jpg', 'music');
+insert into items(name, maker, price, image, genre)
+	values('Live in San Diego [12 inch Analog]', 'Eric Clapton', 3956, 'music002.jpg', 'music');
+insert into items(name, maker, price, image, genre)
+	values('25(UK盤)', 'Adele', 1205, 'music003.jpg', 'music');
+insert into items(name, maker, price, image, genre)
+	values('Somehow,Someday,Somewhere', 'ai kuwabara trio project', 2700, 'music004.jpg', 'music');
+insert into items(name, maker, price, image, genre)
+	values('Singles[Explicit]', 'マルーン5', 1530, 'music005.jpg', 'music');
+
+# カートテーブルcartの作成
+drop table if exists cart;
+create table cart (
+  userId    varchar(50),
+	ident		  int,
+	quantity	int,
+  primary key(userId, ident)
+);
+
+# 注文テーブルordersの作成
+drop table if exists orders;
+create table orders (
+    orderId     int   auto_increment   primary key,
+    userId      varchar(50),
+    orderdate   datetime
+);
+
+# 注文明細テーブルorderdetailsの作成
+drop table if exists orderdetails;
+create table orderdetails (
+    orderId     int,
+    itemId      int,
+    quantity    int,
+    primary key(orderId, itemId)
+);
+
+# ユーザーテーブルusersの作成
+drop table if exists users;
+create table users(
+    userId	      varchar(50) primary key,
+    userName	    varchar(50) not null,
+    kana	        varchar(50) not null,
+    zip           char(7) default '',
+    address			  varchar(50) default '',
+    tel				    varchar(20) default '',
+    password      varchar(20)
+);
+
+# テーブルusersへデータを入力
+insert into users(userId, userName, kana, zip, address, tel, password)
+ values('kobe@denshi.net', '神戸　電子', 'コウベ　デンシ', '6500002', '神戸市中央区北野町1-1-8',
+ '078-242-0014', 'kobedenshi');

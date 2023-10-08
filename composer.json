@@ -1,0 +1,6 @@
+{
+    "require-dev": {
+        "phpunit/phpunit": "^9.5",
+        "php-webdriver/webdriver": "^1.9"
+    }
+}

@@ -1,0 +1,31 @@
+services:
+  db:
+    image: mariadb
+    environment:
+      MARIADB_ROOT_PASSWORD: root
+      MARIADB_DATABASE: shop
+      MARIADB_USER: shopping
+      MARIADB_PASSWORD: site
+      TZ: Asia/Tokyo
+    ports:
+      - "3306:3306"
+    volumes:
+      - db-data:/var/lib/mysql
+      - ./sql/:/docker-entrypoint-initdb.d/
+  php:
+    image: nyanzo/phptest-buster:latest
+    depends_on:
+      - db
+    ports:
+      - "80:80"
+    volumes:
+      - .:/var/www/html
+
+  selenium-chrome:
+    image: nyanzo/selenium-local:latest
+    ports:
+      - 4444:4444
+      - 5900:5900
+
+volumes:
+  db-data:
