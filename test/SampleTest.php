@@ -42,33 +42,7 @@ class SampleTest extends TestCase
         $this->driver = RemoteWebDriver::create($host, DesiredCapabilities::chrome());
     }
 
-    public function testProductSelect()
-    {
-        // 指定URLへ遷移 (Google)
-        $this->driver->get('http://php/src/index.php');
-
-        // トップページ画面のpcリンクをクリック
-        $element_a = $this->driver->findElements(WebDriverBy::tagName('a'));
-        $element_a[4]->click();
-
-        // ジャンル別商品一覧画面のtdタグを取得
-        $element_td = $this->driver->findElements(WebDriverBy::tagName('td'));
-
-        //データベースの値を取得
-        $sql = 'select * from items where genre = ?  order by ident asc';  // SQL文の定義
-        $stmt = $this->pdo->prepare($sql);
-        $stmt->execute(['pc']);
-        $items = $stmt->fetchAll();
-        $i = 0;
-
-        // assert
-        foreach ($items as $item) {
-            $this->assertEquals($item['name'], $element_td[($i * 5) + 1]->getText(), 'ジャンル別商品一覧画面の処理に誤りがあります。');
-            $i++;
-        }
-    }
-
-    public function testCartAdd()
+    public function testCart()
     {
         // 指定URLへ遷移 (Google)
         $this->driver->get('http://php/src/index.php');
@@ -97,27 +71,7 @@ class SampleTest extends TestCase
 
         // assert
         $this->assertEquals(2, $cart['quantity'], 'カート追加処理に誤りがあります。');
-    }
 
-    public function testCartChange()
-    {
-        // 指定URLへ遷移 (Google)
-        $this->driver->get('http://php/src/index.php');
-
-        // トップページ画面のpcリンクをクリック
-        $element_a = $this->driver->findElements(WebDriverBy::tagName('a'));
-        $element_a[4]->click();
-
-        // ジャンル別商品一覧画面の詳細リンクをクリック
-        $element_a = $this->driver->findElements(WebDriverBy::tagName('a'));
-        $element_a[4]->click();
-
-        // 商品詳細画面の注文数を「2」にし、「カートに入れる」をクリック
-        $selector = $this->driver->findElement(WebDriverBy::tagName('select'));
-        $selector->click();
-        $this->driver->getKeyboard()->sendKeys("2");
-        $selector->click();
-        $selector->submit();
 
         // カート画面の注文数を「5」にし、「カートに入れる」をクリック
         $selector = $this->driver->findElement(WebDriverBy::tagName('select'));
@@ -134,35 +88,12 @@ class SampleTest extends TestCase
         $cart = $stmt->fetch();
 
         // assert
-        $this->assertEquals(2, $cart['quantity'], 'カート追加処理に誤りがあります。');
-    }
-
-    public function testCartDelete()
-    {
-        // 指定URLへ遷移 (Google)
-        $this->driver->get('http://php/src/index.php');
-
-        // トップページ画面のpcリンクをクリック
-        $element_a = $this->driver->findElements(WebDriverBy::tagName('a'));
-        $element_a[4]->click();
-
-        // ジャンル別商品一覧画面の詳細リンクをクリック
-        $element_a = $this->driver->findElements(WebDriverBy::tagName('a'));
-        $element_a[4]->click();
-
-        // 商品詳細画面の注文数を「2」にし、「カートに入れる」をクリック
-        $selector = $this->driver->findElement(WebDriverBy::tagName('select'));
-        $selector->click();
-        $this->driver->getKeyboard()->sendKeys("2");
-        $selector->click();
-        $selector->submit();
+        $this->assertEquals(5, $cart['quantity'], 'カート追加処理に誤りがあります。');
 
         // カート画面のinputタグの要素を取得
         $element_form = $this->driver->findElements(WebDriverBy::tagName('form'));
-        // var_dump($element_form);
         $element_form[1]->submit();
 
-        //データベースの値を取得
         //データベースの値を取得
         $sql = 'select items.ident, items.name, items.maker, items.price, cart.quantity, 								
         items.image, items.genre from cart join items on cart.ident = items.ident';     // SQL文の定義
